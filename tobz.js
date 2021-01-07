@@ -276,7 +276,7 @@ module.exports = tobz = async (tobz, message) => {
             if (obj === true){
                 return false
             } else {     
-                return tobz.reply(from, `Kamu belum terdaftar sebagai Teman Yuno\nuntuk mendaftar kirim ${prefix}daftar |nama|umur\n\ncontoh format: ${prefix}daftar |Faris|15\n\ncukup gunakan nama depan/panggilan saja`, id) //if user is not registered
+                return tobz.reply(from, `Kamu belum terdaftar sebagai Teman Yuno\nuntuk mendaftar kirim ${prefix}daftar |nama|umur\n\ncontoh format: ${prefix}daftar |Hiro|15\n\ncukup gunakan nama depan/panggilan saja`, id) //if user is not registered
             }
         }
 
@@ -284,7 +284,7 @@ module.exports = tobz = async (tobz, message) => {
             if (obj === true){
                 return false
             } else {
-                return tobz.reply(from, `Kamu belum cukup umur untuk menggunakan Yuno Bot, min 10 tahun\n\nKamu bisa mendaftar ulang dengan cara donasi terlebih dahulu, bales ${prefix}donasi\nHubungi Owner : wa.me/6281311850715`, id) //if user is not registered
+                return tobz.reply(from, `Kamu belum cukup umur untuk menggunakan Yuno Bot, min 10 tahun\n\nKamu bisa mendaftar ulang dengan cara donasi terlebih dahulu, bales ${prefix}donasi\nHubungi Owner : wa.me/6287892670067`, id) //if user is not registered
             }
         }
 
@@ -500,7 +500,7 @@ module.exports = tobz = async (tobz, message) => {
                             let limits = i.limit;
                             if (limits >= limitCount) {
                                 found = true;
-                                tobz.reply(from, `Perintah BOT anda sudah mencapai batas, coba esok hari :)`, id)
+                                tobz.reply(from, `Perintah BOT anda sudah mencapai batas, coba besok!`, id)
                                 return true;
                             }else{
                                 limit
@@ -582,7 +582,7 @@ module.exports = tobz = async (tobz, message) => {
                 }
                 if(body === '.unmute' && isMuted(chatId) == false){
                     if(isGroupMsg) {
-                        if (!isAdmin) return tobz.reply(from, 'Maaf, perintah ini hanya dapat dilakukan oleh admin Faris!', id)
+                        if (!isAdmin) return tobz.reply(from, 'Maaf, perintah ini hanya dapat dilakukan oleh admin Hiro!', id)
                         if(isMsgLimit(serial)){
                             return
                         }else{
@@ -605,7 +605,7 @@ module.exports = tobz = async (tobz, message) => {
                     }
                 }
                 if (body === '.unbanchat') {
-                    if (!isOwner) return tobz.reply(from, 'Maaf, perintah ini hanya dapat dilakukan oleh Owner Faris!', id)
+                    if (!isOwner) return tobz.reply(from, 'Maaf, perintah ini hanya dapat dilakukan oleh Owner Hiro!', id)
                     if(setting.banChats === false) return
                     setting.banChats = false
                     banChats = false
@@ -617,7 +617,7 @@ module.exports = tobz = async (tobz, message) => {
 
         case prefix+'banchat':
             if (setting.banChats === true) return
-            if (!isOwner) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Owner Faris!', id)
+            if (!isOwner) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Owner Hiro!', id)
             setting.banChats = true
             banChats = true
             fs.writeFileSync('./lib/database/setting.json', JSON.stringify(setting, null, 2))
@@ -704,7 +704,7 @@ module.exports = tobz = async (tobz, message) => {
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.ttp2 [ Teks ]*, contoh *.ttp2 Faris*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.ttp2 [ Teks ]*, contoh *.ttp2 Hiro*`, id)
             const ttp2t = body.slice(6)
             const lttp2 = ["Orange","White","Green","Black","Purple","Red","Yellow","Blue","Navy","Grey","Magenta","Brown","Gold"]
             const rttp2 = lttp2[Math.floor(Math.random() * (lttp2.length))]
@@ -787,7 +787,7 @@ module.exports = tobz = async (tobz, message) => {
             ])
             .on('error', () => tobz.reply(from, 'Error Bjeer', id))
             .on('exit', () => {
-                tobz.sendImage(from, './mager/magernulis√/magernulis1√.jpg', 'magernulis.jpg', '*Sukses Nulis DiBuku✓*\n\n*YouTube : MFarelS CH*\n*Instagram : @mfarelsyahtiawan*\n\n*© Powered By MFarelS | RajinNulis-BOT*', id)
+                tobz.sendImage(from, './mager/magernulis√/magernulis1√.jpg', 'magernulis.jpg', '*Sukses Nulis DiBuku✓*', id)
             })
             break  // BY MFARELS
         case prefix+'stickertoimg':
@@ -906,7 +906,7 @@ module.exports = tobz = async (tobz, message) => {
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.blackpink [ Teks ]*, contoh *.blackpink Faris*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.blackpink [ Teks ]*, contoh *.blackpink Hiro*`, id)
             tobz.reply(from, mess.wait, id)
             const blpk = body.slice(11)
             if (blpk.length > 10) return tobz.reply(from, '*Teks Terlalu Panjang!*\n_Maksimal 10 huruf!_', id)
@@ -916,7 +916,7 @@ module.exports = tobz = async (tobz, message) => {
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.thunder [ Teks ]*, contoh *.thunder Faris*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.thunder [ Teks ]*, contoh *.thunder Hiro*`, id)
             tobz.reply(from, mess.wait, id)
             const thndr = body.slice(9)
             if (thndr.length > 10) return tobz.reply(from, '*Teks Terlalu Panjang!*\n_Maksimal 10 huruf!_', id)
@@ -926,7 +926,7 @@ module.exports = tobz = async (tobz, message) => {
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.pornhub [ |Teks1|Teks2 ]*, contoh *.pornhub |Faris|Dev Faris*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.pornhub [ |Teks1|Teks2 ]*, contoh *.pornhub |Hiro|Dev Hiro*`, id)
             argz = body.trim().split('|')
             if (argz.length >= 2) {
                 tobz.reply(from, mess.wait, id)
@@ -937,14 +937,14 @@ module.exports = tobz = async (tobz, message) => {
                 tobz.sendFileFromUrl(from, `https://api.vhtear.com/pornlogo?text1=${lpornhub}&text2=${lpornhub2}&apikey=${vhtearkey}`)
                 await limitAdd(serial)
             } else {
-                await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *.pornhub [ |Teks1|Teks2 ]*, contoh *.pornhub |Faris|Dev Faris*`, id)
+                await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *.pornhub [ |Teks1|Teks2 ]*, contoh *.pornhub |Hiro|Dev Hiro*`, id)
             }
             break
         case prefix+'glitch':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.glitch [ |Teks1|Teks2 ]*, contoh *.glitch |Faris|Dev Faris*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *.glitch [ |Teks1|Teks2 ]*, contoh *.glitch |Hiro|Dev Hiro*`, id)
             argz = body.trim().split('|')
             if (argz.length >= 2) {
                 tobz.reply(from, mess.wait, id)
@@ -955,7 +955,7 @@ module.exports = tobz = async (tobz, message) => {
                 tobz.sendFileFromUrl(from, `https://api.vhtear.com/glitchtext?text1=${glitch1}&text2=${glitch2}&apikey=${vhtearkey}`)
                 await limitAdd(serial)
             } else {
-                await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *.glitch [ |Teks1|Teks2 ]*, contoh *.glitch |Faris|Dev Faris*`, id)
+                await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *.glitch [ |Teks1|Teks2 ]*, contoh *.glitch |Hiro|Dev Hiro*`, id)
             }
             break
         case prefix+'daftar':  // NAMBAHIN NOMOR DI DATABASE
@@ -965,7 +965,7 @@ module.exports = tobz = async (tobz, message) => {
                 const namanye = argz[1]
                 const umurnye = argz[2]
                     if(isNaN(umurnye)) return await tobz.reply(from, 'Umur harus berupa angka!!', id)
-                    if(umurnye >= 40) return await tobz.reply(from, 'Kamu terlalu tua, kembali lagi ke masa muda untuk menggunakan Yuno Bot', id)
+                    if(umurnye >= 80) return await tobz.reply(from, 'Kamu terlalu tua, kembali lagi ke masa muda untuk menggunakan Yuno Bot', id)
                     const jenenge = namanye.replace(' ','')
                     var ceknya = nonye
                         var obj = pendaftar.some((val) => {
@@ -1001,12 +1001,12 @@ Total Pengguna yang telah terdaftar ${pendaftar.length}`)
                     }
                 break
             case prefix+'daftarulang':
-                    if (!isAdmin) return tobz.reply(from, 'Command ini hanya dapat digunakan oleh admin Faris', id)  
+                    if (!isAdmin) return tobz.reply(from, 'Command ini hanya dapat digunakan oleh admin Hiro', id)  
                     const nomernya = args[1]
                     let textnya = nomernya.replace(/[-\s+@c.us]/g,'')
                     const cusnya = textnya + '@c.us'
                     const umurnya = args[2]
-                    if(umurnya >= 40) return await tobz.reply(from, 'Umur terlalu tua kak, max 40 yaa :D', id)
+                    if(umurnya >= 80) return await tobz.reply(from, 'Umur terlalu tua kak, max 40 yaa :D', id)
                         var found = false
                         Object.keys(pendaftar).forEach((i) => {
                             if(pendaftar[i].id == cusnya){
@@ -1054,13 +1054,13 @@ Total Pengguna yang telah terdaftar ${pendaftar.length}`)
             await tobz.sendFileFromUrl(from, pfp, 'group.png', `*「 GROUP INFO 」*
 *➸ *Name : ${groupname}* 
 *➸ Members : ${totalMem}*
-*➸ Welcome : ${welgrp ? 'Aktif' : 'Tidak Aktif'}*
-*➸ Left : ${leftgrp ? 'Aktif' : 'Tidak Aktif'}*
-*➸ NSFW : ${ngrp ? 'Aktif' : 'Tidak Aktif'}*
-*➸ Simsimi : ${simu ? 'Aktif' : 'Tidak Aktif'}*
-*➸ Anti Sticker : ${stprt ? 'Aktif' : 'Tidak Aktif'}*
-*➸ Anti Link : ${antlink ? 'Aktif' : 'Tidak Aktif'}*
-*➸ Anti Badword : ${antbad ? 'Aktif' : 'Tidak Aktif'}*
+*➸ Welcome : ${welgrp ? '✅' : '❎'}*
+*➸ Left : ${leftgrp ? '✅' : '❎'}*
+*➸ NSFW : ${ngrp ? '✅' : '❎'}*
+*➸ Simsimi : ${simu ? '✅' : '❎'}*
+*➸ Anti Sticker : ${stprt ? '✅' : '❎'}*
+*➸ Anti Link : ${antlink ? '✅' : '❎'}*
+*➸ Anti Badword : ${antbad ? '✅' : '❎'}*
 *➸ Group Description* 
 ${desc}`)
             break
@@ -1748,7 +1748,7 @@ ${desc}`)
             tobz.sendFileFromUrl(from, `${url}`, 'meme.jpg', `${title}`)
             await limitAdd(serial)
             break
-        /* case prefix+'nekopoi':
+        case prefix+'nekopoi':
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
             if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
             if (args.length === 1) return tobz.reply(from, 'Kirim perintah *.nekopoi [linkNekopoi]*\nContoh : *.nekopoi https://nekopoi.care/tsunpuri-episode-1-subtitle-indonesia/*', id)
@@ -1764,7 +1764,7 @@ ${desc}`)
              console.error(err.message)
              await tobz.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
              tobz.sendText(ownerNumber, 'Nekopoi Error : ' + err)
-           } */
+           }
             break
         case prefix+'quoteanime':
             if(isReg(obj)) return
@@ -2100,7 +2100,7 @@ ${desc}`)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik .ceklimit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik .limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length == 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: .play judul lagu`, id)
             try {
                 tobz.reply(from, mess.wait, id)
@@ -3670,6 +3670,40 @@ ${desc}`)
                 tobz.reply(from, err, id)
             }
         break
+case prefix+'gift': // Hanya Admin & Owner maslent yang bisa gift Limit
+            if (!isOwner) return tobz.reply(from, `Maaf, perintah ini hanya dapat dilakukan oleh Admin Yuno!`, id)
+                    const nomerr = arg.split(' ')[0]
+                    const jmla = arg.split(' ')[1]
+                    if(!nomerr) return tobz.reply(from, `Masukkan nomor yang akan di gift, ${prefix}gift [ @tagmember Jumlah ]\n=> Contoh : ${prefix}gift @6287892670067 25`, id)
+                    if(!jmla) return tobz.reply(from, `Masukkan Jumlah gift quota, ${prefix}gift [ @tagmember Jumlah ]\n=> Contoh : ${prefix}gift @6287892670067 25`, id)
+                    if(jmla > 25) return await tobz.reply(from, `Maximal  25!`, id)
+                        var found = false
+                        Object.keys(limit).forEach((i) => {
+                            if(limit[i].id == cusz){
+                                found = i
+                            }
+                        })
+                        if (found !== false) {
+                            limit[found].limit = Math.max(0, limit[found].limit);
+                            if(limit[found].limit <= 25) return tobz.reply(from, `Kuota Limit pada nomor tersebut masih penuh\nUntuk gift pastikan kuota limit target sudah habis`, id)
+                            if(limit[found].limit <= 0) { // JIKA LIMIT 0 MAKA BISA GIFT
+                                return tobz.reply(from, `Kuota limit pada nomor tersebut sudah penuh!`, id)
+                            }else{
+                            limit[found].limit -= jmla
+                            const updated = limit[found]
+                            const result = `Gift kuota limit sukses dengan SN: ${SN} pada ${moment().format('DD/MM/YY HH:mm:ss')}
+*「 GIFT KUOTA LIMIT 」*
+
+• User : @${updated.id.replace('@c.us','')}
+• Limit: ${limitCount-updated.limit}`
+                            console.log(limit[found])
+                            fs.writeFileSync('./lib/database/limit.json',JSON.stringify(limit));
+                            tobz.sendTextWithMentions(from, result)
+                            }
+                        } else {
+                                tobz.reply(from, `Maaf, nomor itu tidak terdaftar di database!`, id)
+                        }
+                break
         case prefix+'restart': // WORK IF YOU RUN USING PM2
             if(isOwner){
                 tobz.sendText(from, '*[WARN]* Restarting ...')
@@ -3834,7 +3868,7 @@ ${desc}`)
             const isCharging = await tobz.getIsPlugged()
             const timestamp = speed();
             const latensi = speed() - timestamp
-            await tobz.reply(from, `*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗣𝗖 」*\nPenggunaan RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${Math.round(require('os').totalmem / 1024 / 1024)}MB\nCPU: ${os.cpus()[0].model}\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗠𝗘𝗦𝗦𝗔𝗚𝗘 」* :\n- *${loadedMsg}* Loaded Messages\n- *${chatIds.length - groups.length}* Total Chats\n  ├ *${groups.length}* Group Chats\n  └ *${chatIds.length}* Personal Chats\n- *${groups.length}* Groups Joined\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗨𝗦𝗘𝗥 」*\n- *${pendaftar.length}* Registered User\n  ├ *${banned.length}* Banned User\n  ├ *${blockedd.length}* Blocked User\n  └ *${adminNumber.length}* Admin User\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗗𝗘𝗩𝗜𝗖𝗘 」*\n*Battery :* ${battery}% ${isCharging ? 'Lagi Di Cas...' : 'Ga Di Cas!'}\nwa_version : 2.20.206.6\nmcc : 510\nmnc : 010\nos_version : 11.0\ndevice_manufacture : Asus ROG Phone 3\ndevice_model : ZH661KS\nos_build_number : Asus ROG Phone 3-user 11.0 20200621.276299 release-key\n\n\n*Speed:* ${latensi.toFixed(4)} _Second_`, id)
+            await tobz.reply(from, `*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗣𝗖 」*\nPenggunaan RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${Math.round(require('os').totalmem / 1024 / 1024)}MB\nCPU: ${os.cpus()[0].model}\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗠𝗘𝗦𝗦𝗔𝗚𝗘 」* :\n- *${loadedMsg}* Loaded Messages\n- *${chatIds.length - groups.length}* Total Chats\n  ├ *${groups.length}* Group Chats\n  └ *${chatIds.length}* Personal Chats\n- *${groups.length}* Groups Joined\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗨𝗦𝗘𝗥 」*\n- *${pendaftar.length}* Registered User\n  ├ *${banned.length}* Banned User\n  ├ *${blockedd.length}* Blocked User\n  └ *${adminNumber.length}* Admin User\n\n*「 𝗦𝗧𝗔𝗧𝗨𝗦 𝗗𝗘𝗩𝗜𝗖𝗘 」*\n*Battery :* ${battery}% ${isCharging ? '🔋🔌' : '🔋❌'}\nwa_version : 2.20.206.6\nmcc : 510\nmnc : 010\nos_version : 10.0\ndevice_manufacture : Redmi Note 9\ndevice_model : M2003J15SC\n\n\n*Speed:* ${latensi.toFixed(4)} _Second_`, id)
             break
         case prefix+'setgroupname':
             if (!isGroupMsg) return tobz.reply(from, `Fitur ini hanya bisa di gunakan dalam group`, id)
@@ -3899,9 +3933,9 @@ ${desc}`)
                     })
                     if (found !== false) {
                         pendaftar[found].id = author;
-                        var registe = '✔'
+                        var registe = '✅'
                     } else {
-                        var registe = '❌'
+                        var registe = '❎'
                     }
                     if (ctt == null) {
                     return await tobz.reply(from, `Nomor WhatsApp tidak valid [ Tidak terdaftar di WhatsApp ]`, id) 
@@ -3918,8 +3952,7 @@ ${desc}`)
                     } else {
                         var namae = contact
                     } 
-                        await tobz.sendContact(chatId, author)
-                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin Yuno: ${donate}*\n• *Registered User :* ${registe}`)
+                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block ? '✅' : '❎'}*\n*• Banned : ${bend ? '✅' : '❎'}*\n• *Admin Group: ${adm ? '✅' : '❎'}*\n• *Admin Yuno: ${donate ? '✅' : '❎'}*\n• *Registered User :* ${registe}`)
                     }
                 } else if (quotedMsg) {
                     var qmid = quotedMsgObj.sender.id
@@ -3939,9 +3972,9 @@ ${desc}`)
                     })
                     if (found !== false) {
                         pendaftar[found].id = qmid;
-                        var registe = '✔'
+                        var registe = '✅'
                     } else {
-                        var registe = '❌'
+                        var registe = '❎'
                     }
                     if (ctt == null) {
                     return await tobz.reply(from, `Nomor WhatsApp tidak valid [ Tidak terdaftar di WhatsApp ]`, id) 
@@ -3958,8 +3991,7 @@ ${desc}`)
                     } else {
                         var namae = contact
                     } 
-                    await tobz.sendContact(chatId, qmid)
-                    tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin Yuno: ${donate}*\n• *Registered User :* ${registe}`)
+                    tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block ? '✅' : '❎'}*\n*• Banned : ${bend ? '✅' : '❎'}*\n• *Admin Group: ${adm ? '✅' : '❎'}*\n• *Admin Yuno: ${donate ? '✅' : '❎'}*\n• *Registered User :* ${registe}`)
                     }
                 }
             }
