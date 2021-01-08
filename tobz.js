@@ -3673,8 +3673,8 @@ ${desc}`)
             for(let lmt of limidat){
                 if(lmt.id === serial){
                     let limitCounts = limitCount-lmt.limit
-                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
-                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
+                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
+                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
                     found = true
                 }
             }
@@ -3684,7 +3684,7 @@ ${desc}`)
                 let obj = {id: `${serial}`, limit:1};
                 limit.push(obj);
                 fs.writeFileSync('./lib/database/limit.json',JSON.stringify(limit, 1));
-                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
+                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
             }
             break
         case prefix+'eval':
@@ -3705,7 +3705,6 @@ case prefix+'gift': // Hanya Admin & Owner maslent yang bisa gift Limit
                     const jmla = arg.split(' ')[1]
                     if(!nomerr) return tobz.reply(from, `Masukkan nomor yang akan di gift, ${prefix}gift [ @tagmember Jumlah ]\n=> Contoh : ${prefix}gift @6287892670067 25`, id)
                     if(!jmla) return tobz.reply(from, `Masukkan Jumlah gift quota, ${prefix}gift [ @tagmember Jumlah ]\n=> Contoh : ${prefix}gift @6287892670067 25`, id)
-                    if(jmla > 25) return await tobz.reply(from, `Maximal  25!`, id)
                         var found = false
                         Object.keys(limit).forEach((i) => {
                             if(limit[i].id == cusz){
