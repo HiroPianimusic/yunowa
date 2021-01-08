@@ -3673,8 +3673,8 @@ ${desc}`)
             for(let lmt of limidat){
                 if(lmt.id === serial){
                     let limitCounts = limitCount-lmt.limit
-                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
-                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
+                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
+                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
                     found = true
                 }
             }
@@ -3684,7 +3684,7 @@ ${desc}`)
                 let obj = {id: `${serial}`, limit:1};
                 limit.push(obj);
                 fs.writeFileSync('./lib/database/limit.json',JSON.stringify(limit, 1));
-                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!`, id)
+                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
             }
             break
         case prefix+'eval':
