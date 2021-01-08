@@ -1,21 +1,5 @@
 /*
-THX BUAT YANG UDAH GUNAIN SCRIPT INI!
-JANGAN LUPA JOIN GRUP WHATSAPP!
-AGAR BISA MENGEMBANGKAN BOT BUKAN COPY DOANG
-JANGAN LUPA CREDIT KALO COPAS!
-
-SCRIPT INI BUKAN UNTUK DIJUAL BELIKAN!
-SCRIPT INI TERBUKA UNTUK SIAPA SAJA!
-JIKA KALIAN INGIN MENAMBAHKAN MENU
-SILAHKAN KONTRIBUSI/PULL REQUEST
-
-BAGI YANG NANYA2 MASANG APIKEY DIMANA??
-BACA README NYA, PERCUMA W BUAT README
-
-INGAT JANGAN JUAL SCRIPT  KEPADA ORANG LAIN!
-INGIN PREMIUM? CHAT TOBZ!
-
-EA BOT V3
+HIRO PIANIMUSIC
 */
 require('dotenv').config()
 const { decryptMedia } = require('@open-wa/wa-decrypt')
@@ -2223,69 +2207,459 @@ ${desc}`)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#nhentai* [ Query ]')
+            const quernh = body.slice(9)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resnh = await fetch(`https://api.vhtear.com/nhentaisearch?query=${encodeURIComponent(quernh)}&apikey=${vhtearkey}`)
+                if (!resnh.ok) throw new Error(`unexpected response ${resnh.statusText}`)
+                const jsonnh = await resnh.json()
+                const { doujins } = await jsonnh.result
+                let berhitung = 1
+                let xixixi = `*「 NHENTAI 」*\n\n*Hasil Pencarian* : ${quernh}\n*Sort* : ${jsonnh.result.sort}\n*Total Pencarian* : ${jsonnh.result.totalResults}\n\n─────────────────\n\nKetik #getnhentai [ Angka ] untuk mengambil ID, Contoh : #getnhentai 2\n`
+                for (let i = 0; i < doujins.length; i++) {
+                    xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${doujins[i].title}\n*Bahasa* : ${doujins[i].lang}\n*Perintah download* : *#getnhentai ${doujins[i].id}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < doujins.length; ii++) {
+                    xixixi += `(#)${doujins[ii].id}`
+                }
+                await tobz.sendFileFromUrl(from, doujins[0].cover, 'thumbnh.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Nhentai tidak ditemukan')
+                tobz.sendText(ownerNumber, 'Nhentai Error : ' + err)
+            }
           break
         case prefix+'getnhentai': // DOWNLOADER NHENTAI PDF FROM .NHENTAI
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+           try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getnhentai [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`, id)
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getnhentai 1*`, id)
+                    const dataDownmp3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = dataDownmp3.split('(#)')
+                    console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const vezasukadoujin = await fetch(`https://api.vhtear.com/nhentaidoujin?query=${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!vezasukadoujin.ok) throw new Error(`Error barbaryt3 ${vezasukadoujin.statusText}`)
+                    const doujinveza = await vezasukadoujin.json()
+                    if (doujinveza.error) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        const { title, artists, categories, secondary_title, languages, images, tags, pages } = await doujinveza.result
+                        console.log(`CHANGE API BARBAR : ${artists}\n${categories}\n${title}`)
+                        const captions = `*「 NHENTAI DOWNLOADER 」*\n\n*Title* : ${title}\n*Secondary Title* : ${secondary_title}\n*Artist* : ${artists}\n*Categories* : ${categories}\n*Pages* : ${pages}\n*Languages* : ${languages}\n*Tags* : ${tags}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        //tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
+                        const urlnh = `https://nhder.herokuapp.com/download/nhentai/${pilur[args[1]]}/zip`
+                        const shorttr = []
+                        const shortenernh = await urlShortener(urlnh)
+                        urlnh['short'] = shortenernh
+                        shorttr.push(urlnh)
+                        tobz.sendText(from, captions, id)
+                        tobz.sendFileFromUrl(from, shortenernh, `${title}.zip`, '_NHENTAI DOWNLOADER', id)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran nhentai.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getnhentai [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`)
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data nhentai dengan nomor urutan, mohon tag pesan bot tentang pencarian nhentai!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const vezasukadoujin = await fetch(`https://api.vhtear.com/nhentaidoujin?query=${args[1]}&apikey=${vhtearkey}`)
+                    if (!vezasukadoujin.ok) throw new Error(`Error barbaryt3 ${vezasukadoujin.statusText}`)
+                    const doujinveza = await vezasukadoujin.json()
+                    if (doujinveza.error) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        const { title, artists, categories, secondary_title, languages, images, tags, pages } = await doujinveza.result
+                        console.log(`CHANGE API BARBAR : ${artists}\n${categories}\n${title}`)
+                        const captions = `*「 NHENTAI DOWNLOADER 」*\n\n*Title* : ${title}\n*Secondary Title* : ${secondary_title}\n*Artist* : ${artists}\n*Categories* : ${categories}\n*Pages* : ${pages}\n*Languages* : ${languages}\n*Tags* : ${tags}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        //tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
+                        const urlnh = `https://nhder.herokuapp.com/download/nhentai/${args[1]}/zip`
+                        const shorttr = []
+                        const shortenernh = await urlShortener(urlnh)
+                        urlnh['short'] = shortenernh
+                        shorttr.push(urlnh)
+                        tobz.sendText(from, captions, id)
+                        tobz.sendFileFromUrl(from, shortenernh, `${title}.zip`, '_NHENTAI DOWNLOADER', id)
+                        //await tobz.sendFileFromUrl(from, result, `${title}.pdf`, `*NHENTAI BY tobz*`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        //await limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error Nhentai : '+ err)
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
           break
         case prefix+'xvideos': // SEARCH VIDEO FROM XVIDEOS
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (!isAdmin) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Admin Elaina!`, id)
+            if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *#xvideos* [ Lagu ]`)
+            const querVID = body.slice(9)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resvid = await fetch(`https://mnazria.herokuapp.com/api/porn?search=${encodeURIComponent(querVID)}`)
+                if (!resvid.ok) throw new Error(`unexpected response ${resvid.statusText}`)
+                const jsonserxvid = await resvid.json()
+                const { result } = await jsonserxvid
+                let berhitung = 1
+                let xixixi = `*「 XVIDEOS 」*\n\n*Hasil Pencarian : ${querVID}*\n\n─────────────────\n\nKetik #getxvideos [angka] untuk mengambil ID, Contoh : #getxvideos 2\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Actors* : ${result[i].actors}\n*Durasi* : ${result[i].duration}\n*Perintah download* : *#getxvideos ${result[i].url}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < result.length; ii++) {
+                    xixixi += `(#)${result[ii].url}`
+                }
+                await tobz.sendFileFromUrl(from, result[0].image, 'thumbxvid.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Xvideos tidak ditemukan')
+                tobz.sendText(ownerNumber, 'Xvideos Error : ' + err)
+            }
             break
         case prefix+'getxvideos': // DOWNLOADER VIDEO FROM .VIDEO
-            if(isReg(obj)) return
+if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (!isAdmin) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Admin Elaina!`, id)
+            if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+            try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getxvideos [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`)
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getxvideos 1*`, id)
+                    const datavideo = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = datavideo.split('(#)')
+                    console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const vidxvid = await fetch(`https://mnazria.herokuapp.com/api/porndownloadxvideos?url=${pilur[args[1]]}`)
+                    if (!vidxvid.ok) throw new Error(`Error Get Video : ${vidxvid.statusText}`)
+                    const vidxvideo = await vidxvid.json()
+                     if (vidxvideo.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        const { mp4 } = await vidxvideo
+                        const shortvidxv = await urlShortener(mp4)
+                        const captions = `*「 XVIDEOS DOWNLOADER 」*\n\n*Website* : XVideos\n*Ext* : MP3\n\n*Silahkan download file media sedang melalui link yang tersedia.*\n${shortvidxv}`
+                        tobz.sendFileFromUrl(from, `https://sensorstechforum.com/wp-content/uploads/2019/07/xvideos-virus-image-sensorstechforum-com.jpg`, ``, captions, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `XVIDEOS BY tobz`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran videp.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getxvideos [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`)
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data video dengan nomor urutan, mohon tag pesan bot tentang pencarian videp!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const getvide = await get.get(`https://mnazria.herokuapp.com/api/porndownloadxvideos?url=${pilur[args[1]]}`).json
+                    if (getvide.error) {
+                        tobz.reply(from, getvide.error, id)
+                    } else {
+                        const { mp4 } = await mhankyt35
+                        const shortvidxv2 = await urlShortener(mp4)
+                        console.log(`CHANGE API BARBAR : ${ext}\n${filesize}\n${status}`)
+                        const captions = `*「 XVIDEO LENT DOWNLOADER 」*\n\n*Website* : XVideos\n\n*Ext* : MP4\n*Link* : ${shortvidxv2}\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendFileFromUrl(from, `https://sensorstechforum.com/wp-content/uploads/2019/07/xvideos-virus-image-sensorstechforum-com.jpg`, ``, captions, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `Music telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error XVideos : '+ err)
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
             break
         case prefix+'video': // SEARCH VIDEO FROM YOUTUBE
-            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+if(isReg(obj)) return
+            if(cekumur(cekage)) return
+          if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+           
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#video* [video]')
+            const querv = body.slice(7)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resmusv = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(querv)}&apikey=${vhtearkey}`)
+                if (!resmusv.ok) throw new Error(`unexpected response ${resmusv.statusText}`)
+                const jsonsercmuv = await resmusv.json()
+                let berhitung1 = 1
+                const { result } = await jsonsercmuv
+                let xixixai = `*Hasil pencarian dari ${querv}*\n\nKetik #getvideo [angka] untuk mengambil ID, Contoh : #getvideo 2\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixai += `\n═════════════════\n\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].channel}\n*Durasi* : ${result[i].duration}\n*Perintah download* : #getvideo ${result[i].id}\n`
+                }
+                    xixixai += `\n\n`
+                for (let ii = 0; ii < result.length; ii++) {
+                    xixixai += `(#)${result[ii].id}`
+                }
+                await tobz.sendFileFromUrl(from, result[0].image, 'thumbserc.jpg', xixixai, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+            }
             break
         case prefix+'getvideo': // DOWNLOADER VIDEO FROM .VIDEO
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#getvideo* [IdDownload], untuk contoh silahkan kirim perintah *#readme*', id)
+            try {    
+            if (quotedMsg && quotedMsg.type == 'image') {
+                if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getmusik 1*`, id)
+                const dataDownmp3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                const pilur = dataDownmp3.split('(#)')
+                console.log(pilur[args[1]])
+                tobz.reply(from, mess.wait, id)
+                const mhanky45 = await fetch(`https://api.vhtear.com/ytdl?link=https://youtu.be/${pilur[args[1]]}&apikey=${vhtearkey}`)
+                if (!mhanky45.ok) throw new Error(`Error Get Video : ${mhanky45.statusText}`)
+                const mhankyt45 = await mhanky45.json()
+                if (mhankyt45.status == false) {
+                    tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                } else {
+                    if (Number(mhankyt45.result.size.split(' MB')[0]) > 30.00) return tobz.sendFileFromUrl(from, mhankyt45.result.imgUrl, `thumb.jpg`, `*「 YOUTUBE VIDEO DOWNLOADER 」*\n\n*Title* : ${mhankyt45.result.title}\n*Ext* : MP3\n*Filesize* : ${mhankyt45.result.size}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_\n${UrlVideo}`, id)
+                    const { title, ext, imgUrl, size, UrlVideo } = await mhankyt45.result
+                    const captions = `*「 YOUTUBE VIDEO DOWNLOADER 」*\n\n*Title* : ${title}\n*Ext* : MP4\n*Filesize* : ${size}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`                  
+                    tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, captions, id)
+                    await tobz.sendFileFromUrl(from, UrlVideo, `${title}.mp4`, `Video telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt3, id))
+                    await limitAdd(serial)
+                }
+            } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran video.*`, id)
+            } else {
+                if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#getmusik [IdDownload]*, untuk contoh silahkan kirim perintah *#readme*')
+                if (args[1] <= 25) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getmusik 1*`,)
+                tobz.reply(from, mess.wait, id)
+                const mhanky45 = await fetch(`https://api.vhtear.com/ytdl?link=https://youtu.be/${args[1]}&apikey=${vhtearkey}`)
+                if (!mhanky45.ok) throw new Error(`Error Get Video : ${mhanky45.statusText}`)
+                const mhankyt45 = await mhanky45.json()
+                if (mhankyt45.status == false) {
+                    tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                } else {
+                    if (Number(mhankyt45.result.size.split(' MB')[0]) > 30.00) return tobz.sendFileFromUrl(from, mhankyt45.result.imgUrl, `thumb.jpg`, `*「 YOUTUBE VIDEO DOWNLOADER 」*\n\n*Title* : ${mhankyt45.result.title}\n*Ext* : MP3\n*Filesize* : ${mhankyt45.result.size}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_\n${UrlVideo}`, id)
+                    const { title, ext, imgUrl, size, UrlVideo } = await mhankyt45.result
+                    const captions = `*「 YOUTUBE VIDEO DOWNLOADER 」*\n\n*Title* : ${title}\n*Ext* : MP4\n*Filesize* : ${size}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`                  
+                    tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, captions, id)
+                    await tobz.sendFileFromUrl(from, UrlVideo, `${title}.mp4`, `Video telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt3, id))
+                    await limitAdd(serial)
+                    }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error Video : '+ err)
+                tobz.reply(from, mess.error.Yt4, id)
+            }
             break
         case prefix+'music': // SEARCH MUSIC FROM YOUTUBE
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#musik* [lagu]')
+            const quer = body.slice(7)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resmus = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(quer)}&apikey=${vhtearkey}`)
+                if (!resmus.ok) throw new Error(`unexpected response ${resmus.statusText}`)
+                const jsonsercmu = await resmus.json()
+                const { result } = await jsonsercmu
+                let berhitung = 1
+                let xixixi = `*Hasil pencarian dari ${quer}*\n\nKetik #getmusik [angka] untuk mengambil ID, Contoh : #getmusik 2\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixi += `\n═════════════════\n\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].channel}\n*Durasi* : ${result[i].duration}\n*Perintah download* : *#getmusik ${result[i].id}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < result.length; ii++) {
+                    xixixi += `(#)${result[ii].id}`
+                }
+                await tobz.sendFileFromUrl(from, result[0].image, 'thumbserc.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Music tidak ditemukan')
+                tobz.sendText(ownerNumber, 'Music Error : ' + err)
+            }
             break
         case prefix+'getmusic': // DOWNLOADER MUSIC FROM .MUSIC
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#getmusik [IdDownload]*, untuk contoh silahkan kirim perintah *#readme*')
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getmusik 1*`, id)
+                    const dataDownmp3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = dataDownmp3.split('(#)')
+                    console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const mhanky35 = await fetch(`https://api.vhtear.com/ytdl?link=https://youtu.be/${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!mhanky35.ok) throw new Error(`Error Get Video : ${mhanky35.statusText}`)
+                    const mhankyt35 = await mhanky35.json()
+                     if (mhankyt35.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        if (Number(mhankyt35.result.size.split(' MB')[0]) >= 10.00) return tobz.sendFileFromUrl(from, mhankyt35.result.imgUrl, `thumb.jpg`, `*「 YOUTUBE MUSIC DOWNLOADER 」*\n\n*Title* : ${mhankyt35.result.title}\n*Ext* : MP3\n*Filesize* : ${mhankyt35.result.size}\n\n*Untuk durasi lebih dari batas disajikan dalam bentuk link*\n${mhankyt35.result.UrlMp3}`, id)
+                        const { title, ext, size, UrlMp3, status, imgUrl } = await mhankyt35.result
+                        console.log(`CHANGE API BARBAR : ${ext}\n${size}\n${status}`)
+                        const captions = `*「 YOUTUBE MUSIC DOWNLOADER 」*\n\n*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${size}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                        tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, captions, id)
+                        await tobz.sendFileFromUrl(from, UrlMp3, `${title}.mp3`, `DOWNLOADER MUSIC BY tobz`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran musik.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#getmusik [IdDownload]*, untuk contoh silahkan kirim perintah *#readme*')
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data musik dengan nomor urutan, mohon tag pesan bot tentang pencarian musik!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const mhanky35 = await fetch(`https://api.vhtear.com/ytdl?link=https://youtu.be/${args[1]}&apikey=${vhtearkey}`)
+                    if (!mhanky35.ok) throw new Error(`Error Get Video : ${mhanky35.statusText}`)
+                    const mhankyt35 = await mhanky35.json()
+                     if (mhankyt35.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        if (Number(mhankyt35.result.size.split(' MB')[0]) >= 10.00) return tobz.sendFileFromUrl(from, mhankyt35.result.imgUrl, `thumb.jpg`, `*「 YOUTUBE MUSIC DOWNLOADER 」*\n\n*Title* : ${mhankyt35.result.title}\n*Ext* : MP3\n*Filesize* : ${mhankyt35.result.size}\n\n*Untuk durasi lebih dari batas disajikan dalam bentuk link*\n${mhankyt35.result.UrlMp3}`, id)
+                        const { title, ext, size, UrlMp3, status, imgUrl } = await mhankyt35.result
+                        console.log(`CHANGE API BARBAR : ${ext}\n${size}\n${status}`)
+                        const captions = `*「 YOUTUBE MUSIC DOWNLOADER 」*\n\n*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${size}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                        tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, captions, id)
+                        await tobz.sendFileFromUrl(from, UrlMp3, `${title}.mp3`, `DOWNLOADER MUSIC BY tobz`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error Get Music : '+ err)
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
             break
         case prefix+'youtubesearch': // SEARCH YOUTUBE
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#youtubesearch [query]*, Contoh : #youtubesearch alan walker alone')
+            const ytsher = body.slice(15)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const response2 = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(ytsher)}&apikey=${vhtearkey}`)
+                if (!response2.ok) throw new Error(`unexpected response ${response2.statusText}`)
+                const jsonserc = await response2.json()
+                const { result } = await jsonserc
+                let xixixi = `*Hasil Pencarian : ${ytsher}*\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixi += `\n═════════════════\n\n*Judul* : ${result[i].title}\n*Ditonton* : ${result[i].views}\n*Durasi* : ${result[i].duration}\n*Channel* : ${result[i].channel}\n*URL* : ${result[i].urlyt}\n`
+                }
+                await tobz.sendFileFromUrl(from, result[0].image, 'thumbserc.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err) {
+                    console.log(err)
+                    await tobz.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
+                    tobz.sendText(ownerNumber, 'YT Search Error : ' + err)
+            }
             break
         case prefix+'shopee': // SEARCH SHOPEE PRODUCT
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#shopee [query]*, Contoh : *#shopee HP Samsul a20*')
+            const shopek = body.slice(8)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const dataplai = await axios.get(`https://api.vhtear.com/shopee?query=${shopek}&count=5&apikey=${vhtearkey}`)
+                const dataplay = dataplai.data.result
+                 let shopeq = `*Hasil Pencarian : ${shopek}*\n`
+                for (let i = 0; i < dataplay.items.length; i++) {
+                    shopeq += `\n═════════════════\n\n*Nama* : ${dataplay.items[i].nama}\nHarga* : ${dataplay.items[i].harga}\n*Terjual* : ${dataplay.items[i].terjual}\n*Lokasi Toko* : ${dataplay.items[i].shop_location}\n*Deskripsi* : ${dataplay.items[i].description}\n*Link Product : ${dataplay.items[i].link_product}*\n`
+                }
+                await tobz.sendFileFromUrl(from, dataplay.items[0].image_cover, `shopee.jpg`, shopeq, id)
+                await limitAdd(serial)
+            }   catch (err){
+                console.log(err)
+            }
             break
         case prefix+'playstore': // SEARCH PLAYSTORE
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#playstore [query]*, Contoh : *#playstore Mobile Legends*')
+            const keywotp = body.slice(11)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const dataplai = await axios.get(`https://api.vhtear.com/playstore?query=${keywotp}&apikey=${vhtearkey}`)
+                const dataplay = dataplai.data
+                 let keluarplay = `*Hasil Pencarian : ${keywotp}*\n`
+                for (let i = 0; i < dataplay.result.length; i++) {
+                    keluarplay += `\n═════════════════\n\n*Nama* : ${dataplay.result[i].title}\n*Developer* : ${dataplay.result[i].developer}\n*Deskripsi* : ${dataplay.result[i].description}\n*Paket ID* : ${dataplay.result[i].app_id}\n*Harga* : ${dataplay.result[i].price}\n*Link App* : https://play.google.com${dataplay.result[i].url}\n`
+                }
+                await tobz.sendFileFromUrl(from, dataplay.result[0].icon, `iconapk.webp`, keluarplay, id)
+                await limitAdd(serial)
+            }   catch (err){
+                console.log(err)
+            }
             break
         case prefix+'neonime': // SEARCH ANIME
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
-            tobz.reply(from, 'PREMIUM COMMAND, HUBUNGI : wa.me/6281311850715', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#animesearch [query]*, Contoh : #animesearch DXD (Hanya Bisa Satu Kata)')
+            const anser = body.slice(13)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const response2 = await fetch(`https://mnazria.herokuapp.com/api/anime?query=${encodeURIComponent(anser)}`)
+                if (!response2.ok) throw new Error(`unexpected response ${response2.statusText}`)
+                const animeser = await response2.json()
+                const { result } = await animeser
+                let xixixi = `*Hasil Pencarian : ${anser}*\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixi += `\n═════════════════\n\n*Judul* : ${result[i].title}\n*Ditonton* : ${result[i].url}\n`
+                }
+                await tobz.reply(from, xixixi, id)
+                await limitAdd(serial)
+            } catch (err) {
+                    console.log(err)
+                    await tobz.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Anime tidak ditemukan')
+                    tobz.sendText(ownerNumber, 'Anime Search Error : ' + err)
+            }
             break
         case prefix+'xnxx':
             if(isReg(obj)) return
@@ -2979,7 +3353,7 @@ ${desc}`)
              tobz.sendText(ownerNumber, 'Error Check IP : '+ err)
            }
           break
-        /*case prefix+'nhentai':
+        case prefix+'nhentai':
         case prefix+'nh':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -3022,7 +3396,7 @@ ${desc}`)
             } else {
                 tobz.reply(from, '[ WRONG ] Kirim perintah *.nhentai [kode]* untuk contoh kirim perintah *.readme*')
             }
-            break*/
+            break
         case prefix+'brainly':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -3667,14 +4041,14 @@ ${desc}`)
         case prefix+'limit':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (!isGroupMsg) return tobz.reply(from, `hanya bisa di dalam grub Ngerti Ga cok? `, id)
             var found = false
             const limidat = JSON.parse(fs.readFileSync('./lib/database/limit.json'))
             for(let lmt of limidat){
                 if(lmt.id === serial){
                     let limitCounts = limitCount-lmt.limit
-                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
-                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
+                    if(limitCounts <= 0) return tobz.reply(from, `Limit request anda sudah habis\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
+                    tobz.reply(from, `Sisa limit request anda tersisa : *${limitCounts}*\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
                     found = true
                 }
             }
@@ -3684,7 +4058,7 @@ ${desc}`)
                 let obj = {id: `${serial}`, limit:1};
                 limit.push(obj);
                 fs.writeFileSync('./lib/database/limit.json',JSON.stringify(limit, 1));
-                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Riset Pagi Pagi Pas Owner Bangun!_`, id)
+                tobz.reply(from, `Sisa limit request anda tersisa : *${limitCount}*\n\n_Note : Limit akan direset setiap jam 21:00!_`, id)
             }
             break
         case prefix+'eval':
